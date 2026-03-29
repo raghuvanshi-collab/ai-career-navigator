@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Professional Resume — AI Career Navigator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --ink: #111827;
+      --ink-mid: #374151;
+      --ink-light: #6b7280;
+      --border: #e5e7eb;
+      --accent: #0f4c75;
+      --accent-2: #1b6ca8;
+      --paper: #fefefe;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #f3f4f6;
+      font-family: 'EB Garamond', Georgia, serif;
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── TOOLBAR ──────────────────────── */
+    .toolbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      background: #111827;
+      padding: 0.875rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 100;
+      gap: 1rem;
+    }
+    .toolbar-brand {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #94a3b8;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .toolbar-brand span { color: #22d3ee; }
+    .toolbar-actions { display: flex; gap: 0.75rem; align-items: center; }
+    .toolbar-btn {
+      padding: 0.5rem 1.25rem;
+      border-radius: 6px;
+      font-family: 'Syne', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .btn-back {
+      background: rgba(255,255,255,0.06);
+      color: #94a3b8;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .btn-back:hover { background: rgba(255,255,255,0.1); color: #fff; }
+    .btn-print {
+      background: #22d3ee;
+      color: #03050b;
+    }
+    .btn-print:hover { background: #06b6d4; }
+
+    /* ─── PAGE AREA ────────────────────── */
+    .page-area {
+      padding: 5rem 2rem 4rem;
+    }
+
+    /* ─── A4 RESUME ────────────────────── */
+    .resume-page {
+      width: 210mm;
+      min-height: 297mm;
+      background: var(--paper);
+      margin: 0 auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+      display: grid;
+      grid-template-columns: 68mm 1fr;
+    }
+
+    /* Left Sidebar */
+    .sidebar {
+      background: var(--accent);
+      padding: 2.5rem 1.75rem;
+      color: #fff;
+    }
+    .sidebar-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.6rem;
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .sidebar-role {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: rgba(255,255,255,0.65);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+    }
+    .sidebar-divider {
+      width: 40px; height: 2px;
+      background: rgba(255,255,255,0.3);
+      margin-bottom: 2rem;
+    }
+    .sidebar-section { margin-bottom: 2rem; }
+    .sidebar-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 0.85rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding-bottom: 0.4rem;
+    }
+    .sidebar-text {
+      font-size: 0.85rem;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.8);
+    }
+    .skill-pill {
+      display: inline-block;
+      background: rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.9);
+      font-size: 0.75rem;
+      padding: 0.3rem 0.7rem;
+      border-radius: 4px;
+      margin: 0.2rem 0.2rem 0.2rem 0;
+      font-family: 'Syne', sans-serif;
+      font-weight: 500;
+    }
+    .contact-item {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 0.4rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.4rem;
+    }
+    .contact-icon { opacity: 0.5; flex-shrink: 0; margin-top: 1px; }
+
+    /* Main Content */
+    .main-content { padding: 2.5rem 2.25rem; }
+    .resume-section { margin-bottom: 2rem; }
+    .resume-section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.85rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 2px solid var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .summary-text {
+      font-size: 0.95rem;
+      line-height: 1.75;
+      color: var(--ink-mid);
+    }
+
+    .roadmap-item {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+      position: relative;
+    }
+    .roadmap-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--accent-2);
+      background: #eef2ff;
+      border: 1px solid #c7d2fe;
+      border-radius: 4px;
+      padding: 2px 6px;
+      flex-shrink: 0;
+      height: fit-content;
+      margin-top: 2px;
+    }
+    .roadmap-text {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--ink-mid);
+    }
+
+    .bg-row {
+      background: #f9fafb;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.85rem 1rem;
+      margin-bottom: 0.75rem;
+    }
+    .bg-row-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--ink-light);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 0.3rem;
+    }
+    .bg-row-value { font-size: 0.9rem; color: var(--ink-mid); line-height: 1.5; }
+
+    /* Print Styles */
+    @media print {
+      body { background: white; }
+      .toolbar, .page-area > *:not(.resume-page) { display: none !important; }
+      .page-area { padding: 0; }
+      .resume-page {
+        width: 100%;
+        min-height: auto;
+        box-shadow: none;
+        margin: 0;
+      }
+      @page { margin: 0; size: A4; }
+    }
+
+    .error-msg {
+      text-align: center;
+      padding: 5rem 2rem;
+      font-family: 'Syne', sans-serif;
+      color: #6b7280;
+    }
+    .error-msg h2 { color: #ef4444; margin-bottom: 1rem; }
+    .error-msg a {
+      color: #22d3ee;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="toolbar no-print" id="toolbar" style="display:none;">
+    <div class="toolbar-brand"><span>AI</span> Career Navigator</div>
+    <div class="toolbar-actions">
+      <a href="dashboard.html" class="toolbar-btn btn-back">← Back to Dashboard</a>
+      <button class="toolbar-btn btn-print" onclick="window.print()">⬇ Download PDF</button>
+    </div>
+  </div>
+
+  <div class="page-area">
+    <div id="loadingMsg" class="error-msg">
+      <p style="font-family:'Syne',sans-serif;color:#6b7280;">Loading resume data...</p>
+    </div>
+    <div id="contentWrapper"></div>
+  </div>
+
+  <script src="js/resume.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — AI Career Navigator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- PREVENT THEME FLICKER (FOUC) synchronously on page load -->
+  <script>
+    (function () {
+      const currentTheme = localStorage.getItem('theme') || 'dark';
+      if (currentTheme === 'light') document.documentElement.setAttribute('data-theme', 'light');
+    })();
+  </script>
+</head>
+
+<body>
+
+  <div id="cursor-dot"></div>
+  <div id="cursor-ring"></div>
+  <canvas id="starCanvas"></canvas>
+  <div class="orb-field" aria-hidden="true">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <div class="page-wrapper">
+
+    <nav class="navbar">
+      <div class="nav-left">
+        <a href="index.html" class="logo">
+          <img src="images/logo.png" alt="Logo"
+            style="height: 38px; width: auto; object-fit: contain; margin-right: 0.25rem; filter: drop-shadow(0 0 12px rgba(34,211,238,0.6));"
+            onerror="this.style.display='none'">
+          <div class="logo-stack">
+            <span class="logo-text">AI <span class="hl">Career</span> Navigator</span>
+            <span class="logo-sub">AI Career Platform</span>
+          </div>
+        </a>
+      </div>
+
+      <div class="nav-center">
+        <ul class="nav-menu">
+          <li><a href="index.html#features">Features</a></li>
+          <li><a href="index.html#about">About</a></li>
+          <li><a href="index.html#career-planning">Career Planning</a></li>
+          <li><a href="index.html#resume-writing">Resume Writing</a></li>
+          <li><a href="index.html#job-search">Job Search</a></li>
+          <li><a href="index.html#blog">Blog</a></li>
+          <li><a href="index.html#ai-transition">AI Transition</a></li>
+        </ul>
+      </div>
+
+      <div class="nav-right">
+        <button id="theme-toggle" class="btn-theme" aria-label="Toggle Theme">☀️</button>
+        <a href="#" class="btn-signin">Sign In</a>
+        <button class="hamburger" aria-label="Toggle Navigation">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </nav>
+
+    <main class="container dashboard-hero">
+      <p class="eyebrow">Your History</p>
+      <h1>Saved <span class="hl">Profiles</span></h1>
+      <p>Review your past career roadmaps and download professional resumes.</p>
+
+      <div id="loader" class="loader-container">
+        <div class="spinner"></div>
+        <span>Loading Mission History...</span>
+      </div>
+
+      <div id="dashboardGrid" class="history-grid"></div>
+    </main>
+
+    <footer style="text-align:center;padding:2rem;border-top:1px solid var(--border);margin-top:4rem;">
+      <p
+        style="font-family:var(--font-mono);font-size:0.68rem;color:var(--text-lo);letter-spacing:2px;text-transform:uppercase;">
+        AI Career Navigator &nbsp;·&nbsp; Where Ambition Meets Algorithm
+      </p>
+    </footer>
+
+  </div>
+
+  <script src="js/dashboard.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+
+</html>

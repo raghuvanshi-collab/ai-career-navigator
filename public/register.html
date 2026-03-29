@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up — AI Career Navigator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <script>
+    (function() {
+      const currentTheme = localStorage.getItem('theme') || 'dark';
+      if (currentTheme === 'light') document.documentElement.setAttribute('data-theme', 'light');
+    })();
+  </script>
+</head>
+<body>
+  <div id="cursor-dot"></div>
+  <div id="cursor-ring"></div>
+  <canvas id="starCanvas"></canvas>
+  <div class="orb-field" aria-hidden="true">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <div class="page-wrapper">
+    <nav class="navbar">
+      <div class="nav-left">
+        <a href="index.html" class="logo">
+          <img src="images/logo.png" alt="Logo" style="height: 38px; width: auto; object-fit: contain; margin-right: 0.25rem; filter: drop-shadow(0 0 12px rgba(34,211,238,0.6));" onerror="this.style.display='none'">
+          <div class="logo-stack">
+            <span class="logo-text">AI <span class="hl">Career</span> Navigator</span>
+            <span class="logo-sub">AI Career Platform</span>
+          </div>
+        </a>
+      </div>
+      <div class="nav-right">
+        <button id="theme-toggle" class="btn-theme" aria-label="Toggle Theme">☀️</button>
+      </div>
+    </nav>
+
+    <section class="hero container" style="padding-top: 4rem;">
+      <h1 class="hero-headline" style="font-size: clamp(3rem, 8vw, 5rem);">
+        <span class="line-accent">Create</span> Account
+      </h1>
+      <p class="hero-tagline-main" style="margin-bottom: 3rem;">Begin your AI journey</p>
+
+      <div class="form-card">
+        <div id="authError" style="color: #ef4444; font-size: 0.9rem; margin-bottom: 1rem; text-align: center; display: none;"></div>
+        <form id="registerForm">
+          <div class="input-group">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" required placeholder="John Doe">
+          </div>
+          <div class="input-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" required placeholder="name@company.com">
+          </div>
+          <div class="input-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" required placeholder="••••••••" minlength="6">
+          </div>
+          <button type="submit" class="btn-launch" id="registerBtn">
+            <span id="btnText">SIGN UP</span>
+            <div class="spinner hidden" id="loadingSpinner"></div>
+          </button>
+          
+          <p style="text-align: center; margin-top: 1.5rem; font-size: 0.9rem; color: var(--text-mid);">
+            Already have an account? <a href="login.html" style="color: var(--cyan); text-decoration: none;">Sign In</a>
+          </p>
+        </form>
+      </div>
+    </section>
+
+    <footer style="text-align:center;padding:2rem;border-top:1px solid var(--border);margin-top:auto;">
+      <p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--text-lo);letter-spacing:2px;text-transform:uppercase;">
+        AI Career Navigator &nbsp;·&nbsp; Where Ambition Meets Algorithm
+      </p>
+    </footer>
+  </div>
+  <script src="js/main.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>

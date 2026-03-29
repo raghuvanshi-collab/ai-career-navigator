@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Career Navigator — Where Ambition Meets Algorithm</title>
+  <meta name="description" content="Decode your destiny. Let AI chart the career path that was always meant to be yours.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  
+  <!-- PREVENT THEME FLICKER (FOUC) synchronously on page load -->
+  <script>
+    (function() {
+      const currentTheme = localStorage.getItem('theme') || 'dark';
+      if (currentTheme === 'light') document.documentElement.setAttribute('data-theme', 'light');
+    })();
+  </script>
+</head>
+<body>
+
+  <!-- Custom Cursor -->
+  <div id="cursor-dot"></div>
+  <div id="cursor-ring"></div>
+
+  <!-- Starfield Canvas -->
+  <canvas id="starCanvas"></canvas>
+
+  <!-- Atmospheric Orbs -->
+  <div class="orb-field" aria-hidden="true">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <!-- Page Wrapper -->
+  <div class="page-wrapper">
+
+    <!-- ─── NAVBAR ──────────────────────────────── -->
+    <nav class="navbar">
+      <div class="nav-left">
+        <a href="index.html" class="logo">
+          <img src="images/logo.png" alt="Logo" style="height: 38px; width: auto; object-fit: contain; margin-right: 0.25rem; filter: drop-shadow(0 0 12px rgba(34,211,238,0.6));" onerror="this.style.display='none'">
+          <div class="logo-stack">
+            <span class="logo-text">AI <span class="hl">Career</span> Navigator</span>
+            <span class="logo-sub">AI Career Platform</span>
+          </div>
+        </a>
+      </div>
+
+      <div class="nav-center">
+        <ul class="nav-menu">
+          <li><a href="#features">Features</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#career-planning">Career Planning</a></li>
+          <li><a href="#resume-writing">Resume Writing</a></li>
+          <li><a href="#job-search">Job Search</a></li>
+          <li><a href="#blog">Blog</a></li>
+          <li><a href="#ai-transition">AI Transition</a></li>
+        </ul>
+      </div>
+
+      <div class="nav-right">
+        <button id="theme-toggle" class="btn-theme" aria-label="Toggle Theme">☀️</button>
+        <a href="#" class="btn-signin">Sign In</a>
+        <button class="hamburger" aria-label="Toggle Navigation">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- ─── HERO / CAREER PLANNING ──────────────── -->
+    <section class="hero container" id="career-planning">
+      <div class="hero-badge">AI-Powered Career Intelligence</div>
+
+      <h1 class="hero-headline">
+        <span class="line-accent">DECODE</span><br>
+        YOUR<br>
+        <span class="line-amber">DESTINY</span>
+      </h1>
+
+      <p class="hero-tagline-main">Where Ambition Meets Algorithm</p>
+
+      <p class="hero-tagline">
+        <strong>Stop guessing. Start knowing.</strong> Let advanced AI analyze your
+        unique skills and ambitions to architect the career roadmap
+        built exclusively for <em>you</em>.
+      </p>
+
+      <div class="hero-divider"></div>
+
+      <!-- ─── FORM CARD ────────────────────────── -->
+      <div class="form-card">
+        <form id="roadmapForm">
+          <div class="input-group">
+            <label for="goalCareer">Your Target Career</label>
+            <input type="text" id="goalCareer" name="goalCareer"
+              placeholder="e.g. Senior AI Engineer, Product Manager" required>
+          </div>
+
+          <button type="submit" class="btn-launch" id="generateRoadmapBtn">
+            <span id="btnTextRoadmap">BUILD MY ROADMAP</span>
+            <div class="spinner hidden" id="loadingSpinnerRoadmap"></div>
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- ─── ROADMAP RESULTS ──────────────────────── -->
+    <section class="results-section container hidden" id="roadmapResultsSection">
+      <p class="section-eyebrow">Generation Complete</p>
+      <h2 class="section-title">Your Custom <span class="hl">Masterplan</span></h2>
+
+      <div class="results-grid">
+        <div class="glass-card result-panel span-full">
+          <p class="panel-label">Step-By-Step Progression</p>
+          <ul id="newRoadmapList" class="roadmap-list"></ul>
+        </div>
+        
+        <div class="glass-card result-panel">
+          <p class="panel-label">Core Skills Required</p>
+          <div id="newSkillsList" class="tags-container"></div>
+        </div>
+
+        <div class="glass-card result-panel">
+          <p class="panel-label">Estimated Timeline</p>
+          <div class="salary-display">
+            <div id="roadmapTimeline" class="salary-amount" style="font-size: 2.5rem;">-- Months</div>
+            <p class="salary-sub">Average Path Duration</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── LANDING INFO ─────────────────────────── -->
+    <section class="info-sections container">
+
+      <!-- About Section -->
+      <div class="about-grid reveal" id="about">
+        <div class="about-content">
+          <p class="eyebrow" style="font-family:var(--font-mono);font-size:0.7rem;color:var(--cyan);letter-spacing:3px;text-transform:uppercase;margin-bottom:1rem;">About The Platform</p>
+          <h2 class="section-title" style="text-align: left; margin-bottom: 1.5rem; font-size: 3rem;">AI Career <span class="hl" style="color:var(--cyan);">Navigator</span></h2>
+          <p style="color: var(--text-mid); font-size: 1.1rem; line-height: 1.8; margin-bottom: 1.5rem;">
+            The modern job market moves faster than traditional education. Millions of professionals struggle with a glaring <strong>skill gap</strong>, paralyzing confusion, and completely outdated advice when trying to chart their professional journey.
+          </p>
+          <p style="color: var(--text-mid); font-size: 1.1rem; line-height: 1.8;">
+            By analyzing your unique profile against massive datasets, our <strong>Generative AI ecosystem</strong> maps the hyper-specific roadmap you need to transition into high-paying, future-proof careers. Stop guessing—let algorithms decode your destiny.
+          </p>
+        </div>
+        <div class="glass-card flex-center" style="display: grid; place-items: center; padding: 4rem; position: relative; overflow: hidden; background: rgba(34,211,238,0.02); margin: 0;">
+          <div style="position:absolute; width: 100%; height: 100%; top:0; left:0; background: radial-gradient(circle at center, rgba(34,211,238,0.1), transparent 70%); border-radius: inherit;"></div>
+          <span style="font-size: 8rem; filter: drop-shadow(0 0 30px var(--cyan-glow)); position: relative; z-index: 1;">🗺️</span>
+        </div>
+      </div>
+
+      <!-- Why This Matters -->
+      <div class="heading-group reveal" id="why-it-matters">
+        <p class="eyebrow">The Stakes</p>
+        <h2>Why This <span class="hl">Matters</span></h2>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card reveal">
+          <span class="stat-icon">🎓</span>
+          <h4>1.5M+ Graduates</h4>
+          <p>Engineering graduates entering India's workforce each year — most without a clear path.</p>
+        </div>
+        <div class="stat-card reveal">
+          <span class="stat-icon">⚠️</span>
+          <h4>Skill Mismatch</h4>
+          <p>Rigid academic curriculums dangerously disconnected from industry realities.</p>
+        </div>
+        <div class="stat-card reveal">
+          <span class="stat-icon">💸</span>
+          <h4>Expensive Guidance</h4>
+          <p>Quality career counseling costs lakhs — inaccessible to most young professionals.</p>
+        </div>
+        <div class="stat-card reveal">
+          <span class="stat-icon">🤖</span>
+          <h4>Generic Platforms</h4>
+          <p>Existing tools give one-size-fits-all answers to deeply personal questions.</p>
+        </div>
+        <div class="stat-card reveal">
+          <span class="stat-icon">😰</span>
+          <h4>Career Anxiety</h4>
+          <p>Over 65% of graduates report severe anxiety about their professional future.</p>
+        </div>
+      </div>
+
+      <!-- How It Works -->
+      <div class="heading-group reveal" id="features" style="margin-top:2rem;">
+        <p class="eyebrow">The Solution</p>
+        <h2>How It <span class="hl">Works</span></h2>
+      </div>
+
+      <div class="features-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+        <div class="feature-card reveal d1">
+          <span class="feature-icon">✨</span>
+          <h4>AI Career Recommendation</h4>
+          <p>Get instant role matches uniquely tailored to your existing foundational skills and personal interests.</p>
+        </div>
+        <div class="feature-card reveal d2">
+          <span class="feature-icon">🔍</span>
+          <h4>Skill Gap Analysis</h4>
+          <p>Expose precisely what you need to learn to bridge the chasm between your current state and your dream job.</p>
+        </div>
+        <div class="feature-card reveal d3">
+          <span class="feature-icon">🗺️</span>
+          <h4>Personalized Roadmap</h4>
+          <p>Receive a linear, time-sensitive progression plan guiding your educational and professional milestones.</p>
+        </div>
+        <div class="feature-card reveal d4">
+          <span class="feature-icon">📄</span>
+          <h4>Resume Builder</h4>
+          <p>Dynamically transform your career insights and background into a professionally formatted PDF resume.</p>
+        </div>
+        <div class="feature-card reveal d1">
+          <span class="feature-icon">🎯</span>
+          <h4>Job Matching</h4>
+          <p>Discover real-world job roles currently trending with high demand and attractive salary projections.</p>
+        </div>
+        <div class="feature-card reveal d2">
+          <span class="feature-icon">💬</span>
+          <h4>AI Career Assistant</h4>
+          <p>Leverage our 24/7 intelligent agent to consult, pivot, and navigate complex industry transitions seamlessly.</p>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ─── AI RESUME BUILDER ──────────────────── -->
+    <section class="container reveal" id="resume-writing" style="padding: 4rem 2rem; border-top: 1px solid var(--border);">
+      <div class="heading-group" style="text-align: center;">
+        <p class="eyebrow">Professional Branding</p>
+        <h2>Live <span class="hl">Resume Builder</span></h2>
+      </div>
+
+      <div class="about-grid" style="align-items: start; gap: 2rem;">
+        <!-- Input Form -->
+        <div class="form-card" style="margin: 0; max-width: 100%;">
+          <form id="liveResumeForm">
+            <div class="input-group">
+              <label for="resName">Full Name</label>
+              <input type="text" id="resName" placeholder="e.g. Jane Doe" required>
+            </div>
+            <div class="input-group">
+              <label for="resEmail">Email</label>
+              <input type="email" id="resEmail" placeholder="e.g. jane@example.com" required>
+            </div>
+            <div class="input-group">
+              <label for="resSkills">Key Skills (comma separated)</label>
+              <input type="text" id="resSkills" placeholder="e.g. React, Node.js, Leadership" required>
+            </div>
+            <div class="input-group">
+              <label for="resEdu">Education</label>
+              <input type="text" id="resEdu" placeholder="e.g. B.Tech Computer Science, 2024" required>
+            </div>
+            <div class="input-group">
+              <label for="experience">Professional Experience</label>
+              <textarea id="experience" placeholder="e.g. Software Engineer at TechCorp (2022-Present)" rows="3" required></textarea>
+            </div>
+            <div class="input-group">
+              <label for="projects">Notable Projects</label>
+              <textarea id="projects" placeholder="e.g. AI Chatbot, E-Commerce App" rows="2" required></textarea>
+            </div>
+            <div class="input-group">
+              <label for="resPort">Portfolio Link</label>
+              <input type="url" id="resPort" placeholder="e.g. https://janedoe.com">
+            </div>
+            <div class="input-group">
+              <label for="resGit">GitHub Link</label>
+              <input type="url" id="resGit" placeholder="e.g. https://github.com/janedoe">
+            </div>
+            <div class="input-group">
+              <label for="resLink">LinkedIn Link</label>
+              <input type="url" id="resLink" placeholder="e.g. https://linkedin.com/in/janedoe">
+            </div>
+            <button type="submit" class="btn-launch" id="generateResumeBtn" style="font-size: 1.1rem; padding: 0.8rem;">
+              GENERATE RESUME
+            </button>
+          </form>
+        </div>
+
+        <!-- Rendered Resume Preview -->
+        <div id="resumePreviewContainer" class="hidden" style="display: flex; flex-direction: column; gap: 1rem;">
+          <div id="resumeOutput" style="background: #ffffff; color: #000000; padding: 2rem; border-radius: 4px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); font-family: 'Helvetica Neue', Arial, sans-serif;">
+            <!-- Generated content goes here -->
+          </div>
+          <button id="downloadPdfBtn" class="btn-signin" style="width: max-content; margin: 0 auto;">Download as PDF</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── JOB SEARCH ──────────────────── -->
+    <section class="container reveal" id="job-search" style="padding: 4rem 2rem; border-top: 1px solid var(--border);">
+      <div class="heading-group" style="text-align: center;">
+        <p class="eyebrow">Trending Tech Roles</p>
+        <h2>Live <span class="hl">Job Market</span></h2>
+      </div>
+
+      <!-- Filter/Search Bar -->
+      <div style="max-width: 600px; margin: 0 auto 3rem; position: relative;">
+        <input type="text" id="jobSearchInput" placeholder="Search by role or skill (e.g. Python, AI Manager)" 
+               style="width: 100%; padding: 1rem 1.5rem; border-radius: 100px; background: var(--surface); border: 1px solid var(--border); color: var(--text-hi); font-family: var(--font-body); font-size: 1rem; padding-left: 3.5rem; box-shadow: 0 4px 20px rgba(0,0,0,0.2);">
+        <span style="position: absolute; left: 1.2rem; top: 50%; transform: translateY(-50%); font-size: 1.2rem; pointer-events: none;">🔍</span>
+      </div>
+
+      <div class="features-grid" id="jobCardsContainer" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));">
+        <!-- AI Engineer -->
+        <div class="glass-card job-card" data-role="AI Engineer" data-skills="Python, PyTorch, LLMs" style="padding: 2rem; text-align: left; display:flex; flex-direction:column;">
+          <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+             <div style="width: 40px; height: 40px; background: rgba(34,211,238,0.1); border-radius: 8px; display: grid; place-items: center; color: var(--cyan); font-size: 1.2rem;">🤖</div>
+             <span style="font-size: 0.75rem; background: rgba(239,68,68,0.1); color: #ef4444; padding: 0.2rem 0.6rem; border-radius: 100px; border: 1px solid rgba(239,68,68,0.2);">High Demand</span>
+          </div>
+          <h4 style="font-size: 1.25rem; margin-bottom: 0.5rem;">AI Engineer</h4>
+          <p style="font-size: 0.95rem; color: var(--text-mid); margin-bottom: 1rem;">Average Salary: <strong style="color:var(--amber);">₹18 - 30LPA</strong></p>
+          <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+            <span class="tag">Python</span><span class="tag">PyTorch</span><span class="tag">LLMs</span>
+          </div>
+          <button class="btn-signin" style="width: 100%; text-align: center; margin-top:auto;">Apply Now</button>
+        </div>
+
+        <!-- Data Scientist -->
+        <div class="glass-card job-card" data-role="Data Scientist" data-skills="SQL, Machine Learning, Tableau" style="padding: 2rem; text-align: left; display:flex; flex-direction:column;">
+          <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+             <div style="width: 40px; height: 40px; background: rgba(34,211,238,0.1); border-radius: 8px; display: grid; place-items: center; color: var(--cyan); font-size: 1.2rem;">📊</div>
+             <span style="font-size: 0.75rem; background: rgba(239,68,68,0.1); color: #ef4444; padding: 0.2rem 0.6rem; border-radius: 100px; border: 1px solid rgba(239,68,68,0.2);">High Demand</span>
+          </div>
+          <h4 style="font-size: 1.25rem; margin-bottom: 0.5rem;">Data Scientist</h4>
+          <p style="font-size: 0.95rem; color: var(--text-mid); margin-bottom: 1rem;">Average Salary: <strong style="color:var(--amber);">₹14 - 24LPA</strong></p>
+          <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+            <span class="tag">SQL</span><span class="tag">ML</span><span class="tag">Tableau</span>
+          </div>
+          <button class="btn-signin" style="width: 100%; text-align: center; margin-top:auto;">Apply Now</button>
+        </div>
+
+        <!-- Web Developer -->
+        <div class="glass-card job-card" data-role="Web Developer" data-skills="React, Node.js, Next.js" style="padding: 2rem; text-align: left; display:flex; flex-direction:column;">
+          <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+             <div style="width: 40px; height: 40px; background: rgba(34,211,238,0.1); border-radius: 8px; display: grid; place-items: center; color: var(--cyan); font-size: 1.2rem;">💻</div>
+             <span style="font-size: 0.75rem; background: rgba(251,191,36,0.1); color: var(--amber); padding: 0.2rem 0.6rem; border-radius: 100px; border: 1px solid rgba(251,191,36,0.2);">Steady Demand</span>
+          </div>
+          <h4 style="font-size: 1.25rem; margin-bottom: 0.5rem;">Web Developer</h4>
+          <p style="font-size: 0.95rem; color: var(--text-mid); margin-bottom: 1rem;">Average Salary: <strong style="color:var(--amber);">₹8 - 16LPA</strong></p>
+          <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+            <span class="tag">React</span><span class="tag">Node.js</span><span class="tag">Next.js</span>
+          </div>
+          <button class="btn-signin" style="width: 100%; text-align: center; margin-top:auto;">Apply Now</button>
+        </div>
+
+        <!-- Cybersecurity Analyst -->
+        <div class="glass-card job-card" data-role="Cybersecurity Analyst" data-skills="Network Security, SIEM, Ethical Hacking" style="padding: 2rem; text-align: left; display:flex; flex-direction:column;">
+          <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+             <div style="width: 40px; height: 40px; background: rgba(34,211,238,0.1); border-radius: 8px; display: grid; place-items: center; color: var(--cyan); font-size: 1.2rem;">🛡️</div>
+             <span style="font-size: 0.75rem; background: rgba(239,68,68,0.1); color: #ef4444; padding: 0.2rem 0.6rem; border-radius: 100px; border: 1px solid rgba(239,68,68,0.2);">High Demand</span>
+          </div>
+          <h4 style="font-size: 1.25rem; margin-bottom: 0.5rem;">Cyber Security</h4>
+          <p style="font-size: 0.95rem; color: var(--text-mid); margin-bottom: 1rem;">Average Salary: <strong style="color:var(--amber);">₹10 - 20LPA</strong></p>
+          <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+            <span class="tag">SIEM</span><span class="tag">Network</span><span class="tag">Security</span>
+          </div>
+          <button class="btn-signin" style="width: 100%; text-align: center; margin-top:auto;">Apply Now</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── AI TRANSITION ────────────────────────── -->
+    <section class="container reveal" id="ai-transition" style="padding: 4rem 2rem; border-top: 1px solid var(--border);">
+      <div class="heading-group" style="text-align: center;">
+        <p class="eyebrow">Career Pivot Engine</p>
+        <h2>AI <span class="hl">Transition</span> Matrix</h2>
+        <p style="color: var(--text-mid); font-size: 1.1rem; line-height: 1.6; max-width: 800px; margin: 1rem auto;">
+          Analyze the exact gap between your current skill set and your dream AI role. Discover what you can transfer, what you need to learn, and how long it will take.
+        </p>
+      </div>
+
+      <div class="about-grid" style="align-items: start; gap: 2rem;">
+        <div class="form-card" style="margin: 0; max-width: 100%;">
+          <form id="transitionForm">
+            <div class="input-group">
+              <label>Current Skills (e.g. Graphic Design, Marketing)</label>
+              <input type="text" id="transCurrent" required>
+            </div>
+            <div class="input-group">
+              <label>Target Career (e.g. AI Prompt Engineer)</label>
+              <input type="text" id="transTarget" required>
+            </div>
+            <button type="submit" class="btn-launch" id="btnTransition" style="font-size: 1.1rem; padding: 0.8rem;">
+              <span id="txtTransition">CALCULATE PIVOT</span>
+              <div class="spinner hidden" id="spinTransition"></div>
+            </button>
+          </form>
+        </div>
+
+        <!-- Output section -->
+        <div id="transitionResult" class="hidden" style="display: flex; flex-direction: column; gap: 1rem;">
+          <div class="glass-card" style="padding: 1.5rem;">
+            <p style="font-size: 0.9rem; color: var(--text-lo); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 1px;">Estimated Alignment</p>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+               <span id="transProgressText" style="font-size: 2.2rem; margin-top: -0.3rem; color: var(--emerald); font-weight: 700;">0%</span>
+               <span id="transDiff" class="tag" style="border: 1px solid var(--emerald); color: var(--emerald); font-size: 0.85rem; padding: 4px 10px;">Difficulty</span>
+            </div>
+            <div style="width: 100%; height: 8px; background: rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden; margin-top: 0.5rem;">
+              <div id="transProgressBar" style="width: 0%; height: 100%; background: var(--cyan); transition: width 1s ease-out;"></div>
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-mid); margin-top: 1.2rem;">Estimated Time: <strong style="color:var(--text-hi);" id="transTime"></strong></p>
+          </div>
+
+          <div class="glass-card" style="padding: 1.5rem;">
+            <p style="font-size: 0.9rem; color: var(--text-lo); margin-bottom: 0.5rem; text-transform: uppercase;">Missing Skills</p>
+            <div id="transGap" style="display: flex; gap: 0.5rem; flex-wrap: wrap;"></div>
+          </div>
+          
+          <div class="glass-card" style="padding: 1.5rem;">
+            <p style="font-size: 0.9rem; color: var(--text-lo); margin-bottom: 0.5rem; text-transform: uppercase;">Smart Advice</p>
+            <ul id="transTips" style="margin: 0; padding-left: 1.2rem; color: var(--text-hi); font-size: 0.95rem; line-height: 1.5;"></ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── BLOG ─────────────────────────────────── -->
+    <section class="container reveal" id="blog" style="padding: 4rem 2rem; border-top: 1px solid var(--border); margin-bottom: 4rem;">
+      <div class="heading-group" style="text-align: center;">
+        <p class="eyebrow">Industry Insights</p>
+        <h2>Latest <span class="hl">Articles</span></h2>
+      </div>
+      <div class="features-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+        <!-- Card 1 -->
+        <div class="glass-card blog-card" style="padding: 0; overflow: hidden; display: flex; flex-direction: column;">
+          <div style="width: 100%; height: 200px; background: url('https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=720&auto=format&fit=crop') center/cover;"></div>
+          <div style="padding: 2rem; flex-grow: 1; display:flex; flex-direction:column;">
+            <p style="font-size: 0.8rem; color: var(--cyan); margin-bottom: 0.5rem; font-family: var(--font-mono);">April 2026</p>
+            <h4 style="font-size: 1.3rem; margin-bottom: 1rem; line-height: 1.3;">How Prompt Engineering is Shaping Design</h4>
+            <p style="color: var(--text-mid); font-size: 0.95rem; margin-bottom: 1.5rem; flex-grow: 1;">Explore how traditional artistic careers are rapidly evolving onto platforms requiring advanced language modeling architecture.</p>
+            <a href="https://www.ibm.com/topics/prompt-engineering" target="_blank" style="color: var(--text-hi); font-weight: 600; text-decoration: none; border-bottom: 1px solid var(--cyan); display: inline-block; width: max-content; padding-bottom: 2px; transition: color 0.2s;">Read Article →</a>
+          </div>
+        </div>
+        <!-- Card 2 -->
+        <div class="glass-card blog-card" style="padding: 0; overflow: hidden; display: flex; flex-direction: column;">
+          <div style="width: 100%; height: 200px; background: url('https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?q=80&w=720&auto=format&fit=crop') center/cover;"></div>
+          <div style="padding: 2rem; flex-grow: 1; display:flex; flex-direction:column;">
+            <p style="font-size: 0.8rem; color: var(--cyan); margin-bottom: 0.5rem; font-family: var(--font-mono);">March 2026</p>
+            <h4 style="font-size: 1.3rem; margin-bottom: 1rem; line-height: 1.3;">Overcoming Junior Developer Saturation</h4>
+            <p style="color: var(--text-mid); font-size: 0.95rem; margin-bottom: 1.5rem; flex-grow: 1;">Actionable strategies compiled by AI on how entering developers can stand out utilizing incredibly niche technology stacks.</p>
+            <a href="https://roadmap.sh" target="_blank" style="color: var(--text-hi); font-weight: 600; text-decoration: none; border-bottom: 1px solid var(--cyan); display: inline-block; width: max-content; padding-bottom: 2px; transition: color 0.2s;">Read Article →</a>
+          </div>
+        </div>
+        <!-- Card 3 -->
+        <div class="glass-card blog-card" style="padding: 0; overflow: hidden; display: flex; flex-direction: column;">
+          <div style="width: 100%; height: 200px; background: url('https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=720&auto=format&fit=crop') center/cover;"></div>
+          <div style="padding: 2rem; flex-grow: 1; display:flex; flex-direction:column;">
+            <p style="font-size: 0.8rem; color: var(--cyan); margin-bottom: 0.5rem; font-family: var(--font-mono);">March 2026</p>
+            <h4 style="font-size: 1.3rem; margin-bottom: 1rem; line-height: 1.3;">The Future of Tech Interviews</h4>
+            <p style="color: var(--text-mid); font-size: 0.95rem; margin-bottom: 1.5rem; flex-grow: 1;">With AI capable of writing complete applications instantaneously, how are top tech companies changing their interview processes?</p>
+            <a href="https://www.weforum.org/agenda/archive/future-of-work/" target="_blank" style="color: var(--text-hi); font-weight: 600; text-decoration: none; border-bottom: 1px solid var(--cyan); display: inline-block; width: max-content; padding-bottom: 2px; transition: color 0.2s;">Read Article →</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer Line -->
+    <footer style="text-align:center;padding:2rem;border-top:1px solid var(--border);margin-top:2rem;">
+      <p style="font-family:var(--font-mono);font-size:0.68rem;color:var(--text-lo);letter-spacing:2px;text-transform:uppercase;">
+        AI Career Navigator &nbsp;·&nbsp; Where Ambition Meets Algorithm &nbsp;·&nbsp; 2025
+      </p>
+    </footer>
+
+  </div><!-- end page-wrapper -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>
