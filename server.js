@@ -9,7 +9,16 @@ const apiRoutes = require('./routes/api');
 const app = express();
 
 // Middleware
-app.use(cors());
+const corsOptions = {
+  origin: [
+    'https://ai-career-navigator-sable.vercel.app',
+    'http://localhost:5000',
+    'http://127.0.0.1:5000',
+    'http://localhost:3000'
+  ],
+  credentials: true
+};
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
@@ -25,8 +34,4 @@ app.use('/api/auth', require('./routes/auth'));
 
 const PORT = process.env.PORT || 5000;
 
-if (process.env.NODE_ENV !== 'production') {
-  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-}
-
-module.exports = app;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

@@ -159,7 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
       setLoading(true);
       if(resultsSection) resultsSection.classList.add('hidden');
 
-      const response = await fetch('/api/roadmap', {
+      const response = await fetch(`${window.API_BASE_URL}/roadmap`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
@@ -375,7 +375,7 @@ document.addEventListener('DOMContentLoaded', () => {
       spinner.classList.remove('hidden');
       if(resultContainer) resultContainer.classList.add('hidden');
 
-      const response = await fetch('/api/transition', {
+      const response = await fetch(`${window.API_BASE_URL}/transition`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ currentSkills, targetCareer })
